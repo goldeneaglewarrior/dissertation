@@ -1,5 +1,5 @@
 # Images
 
 ### Tanzania ABC map 2007
-![Tanzania 2007](images/tan_agc_07.png)
+![Tanzania 2007](tan_agc_07.png)
 
