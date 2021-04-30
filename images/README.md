@@ -14,7 +14,12 @@
 
 
 ### animated density plot
-![](den_animation.gif)
+![](den_animation.gif) 
+
+
+ animated density plot     |  animated line plot of AGC per population density
+:-------------------------:|:-------------------------:
+![](den_animation.gif)  |  ![](line_animation.gif)
 
 
 ### animated line plot of AGC per population density
