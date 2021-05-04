@@ -148,13 +148,11 @@ tan_longer %>%
     labs(title = "Tanzania 2007 - 2010, population density 0 - 60",
          subtitle = 'Population Density: **{as.integer(frame_time)}** people per km2', 
          y = "cumulative area of agc measured (km2)") +
-    annotate("text", x = 40, y = 2e+05, size = 5,
-             label = "But is this effect just a fluke of \n the diminishing sample size?") +
     theme_doug() +
     transition_reveal(roundedpop))
 
 
-plot <- tan_longer %>% 
+tan_longer %>% 
   filter(roundedpop %in% 1:60) %>% 
   group_by(year, roundedpop) %>% 
   summarise(sum_agc = sum(!is.na(MgC_km))) %>% 
@@ -165,13 +163,13 @@ plot <- tan_longer %>%
   theme_doug() +
   transition_reveal(roundedpop) +
   labs(title = "Tanzania, population density 0 - 60",
-       subtitle = 'Population Density: **{as.integer(frame_time)}** people per km2', 
+      # subtitle = 'Population Density: **{as.integer(frame_time)}** people per km2', 
        y = "cumulative area of agc measured (km2)",
        x = "population density (rounded)",
-       caption = "McNicol et al. 2018, \n Worldpop.org") +
-  theme(plot.subtitle = element_markdown())
+       caption = "McNicol et al. 2018, \n Worldpop.org") #+
+  #theme(plot.subtitle = element_markdown())
   
-plot
+
 
 library(plotly)
 
