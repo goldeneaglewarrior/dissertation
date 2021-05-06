@@ -23,7 +23,7 @@
 <img src="1apr_buffer_tan.png" alt="alt text" width="600" height="600"> 
 
 
-#### I could investigate the impact of Protected areas in skewing the relationship
+#### I could investigate how protected areas impact the relationship between population density and AGC density
 ```
 using wdpa package
 ```
