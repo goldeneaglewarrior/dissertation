@@ -1,19 +1,32 @@
-### Here are some example plots I have produced so far
+## Here are some example plots I have produced so far
 
 
 
 #### contents of these images
-- tanzania map
-- animated density gif 
+- map of tanzania AGC and national parks
+- animated density and line plot gifs
 - density plots
 
+
+<br/>
+<br/>
+<br/>
+
+
+
+
+## maps of Tanzania   
+
+
+<img src="tan_agc_07.png" alt="alt text" width="600" height="600">  
+
+
+
+<img src="national_parks.png" alt="alt text" width="600" height="600"> 
+
 ----
 
 
-### Here is a map of Tanzania AGC 2007
-<img src="tan_agc_07.png" alt="alt text" width="600" height="600">
-
-----
 
 
 #### Here are some animations that change simultanuously with population density 
