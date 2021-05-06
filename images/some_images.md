@@ -30,7 +30,9 @@ using wdpa package
 National Parks | Forest Reserves
 :-------------------------:|:-------------------------:
 
-<img src="national_parks.png" alt="alt text" width="450" height="450"> | <img src="forest_reserve.png" alt="alt text" width="450" height="450">  
+<img src="national_parks.png" alt="alt text" width="475" height="475">  <img src="forest_reserve.png" alt="alt text" width="475" height="475">  
+
+<br>
 
 ----
 
