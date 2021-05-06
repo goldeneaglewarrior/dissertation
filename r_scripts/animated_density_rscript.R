@@ -157,15 +157,15 @@ tan_longer %>%
   group_by(year, roundedpop) %>% 
   summarise(sum_agc = sum(!is.na(MgC_km))) %>% 
   ggplot(aes(x = roundedpop, y = sum_agc, group = year)) +
-  geom_line(aes(colour = year), size= .5, alpha = 0.4) +
+  geom_line(aes(colour = year), size= 1, alpha = 0.4) +
   geom_point(aes(colour = year)) +
   scale_colour_viridis_d() +
   theme_doug() +
   transition_reveal(roundedpop) +
   labs(title = "Tanzania, population density 0 - 60",
       # subtitle = 'Population Density: **{as.integer(frame_time)}** people per km2', 
-       y = "cumulative area of agc measured (km2)",
-       x = "population density (rounded)",
+       y = "total area of agc measured (km2)",
+       x = "population density, people per km2",
        caption = "McNicol et al. 2018, \n Worldpop.org") #+
   #theme(plot.subtitle = element_markdown())
   

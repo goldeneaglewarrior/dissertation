@@ -63,7 +63,7 @@ tza_pa_data %>%
   geom_polygon(data = tanza, 
                aes(x=long, y = lat, group = group), 
                fill = NA, colour = "black") +
-  geom_sf(aes(fill = IUCN_CAT), inherit.aes = FALSE) +
+  geom_sf(aes(fill = IUCN_CAT), col = "black", alpha = 0.7, inherit.aes = FALSE) +
 #  geom_sf_text(aes(label=NAME, color = IUCN_CAT),
 #               size= 2, fontface = "bold") +
   theme(axis.title = element_blank(), legend.position = "bottom") +
@@ -71,11 +71,24 @@ tza_pa_data %>%
   labs(title = "Tanzania National Parks",
        x = "Longitude",
        y = "Latitude",
-       caption = "World database on \nProtected Areas") +
+       caption = "World Database on \nProtected Areas") +
   theme_classic()
 
-
 hist(tza_pa_data$STATUS_YR, main = "Tanzania's protected areas", xlab = "Year established")
+
+serengenti <- tza_pa_data %>% 
+  filter(NAME == "Serengeti National Park" & DESIG == "National Park")
+
+forest_reserve <- tza_pa_data %>% 
+  filter(DESIG == "Forest Reserve")
+
+
+ggplot(serengenti) +
+  geom_sf(aes(fill = IUCN_CAT))
+
+
+seren07 <- crop(africa_07, extent(serengenti))
+
 
 
 statistic <-
