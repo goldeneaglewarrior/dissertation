@@ -20,7 +20,7 @@
 
 <img src="tan_agc_07.png" alt="alt text" width="600" height="600">  
 
-
+<img src="1apr_buffer_tan.png" alt="alt text" width="600" height="600"> 
 
 <img src="national_parks.png" alt="alt text" width="600" height="600"> 
 
@@ -37,7 +37,12 @@ Density plot     |  total agc line
 <br>
 
 #### What does this actually look like? Here is a freqpoly plot, a histogram
-<img src="freqpoly.gif" alt="alt text" width="450" height="450">
+A freqpoly histogram     |  zooming in on 0 - 10, population density
+:-------------------------:|:-------------------------:
+<img src="freqpoly.gif" alt="alt text" width="450" height="450"> | <img src="freqpoly_10.gif" alt="alt text" width="450" height="450">
+
+
+<br>
 
 
 ----
