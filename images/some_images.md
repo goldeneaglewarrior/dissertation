@@ -17,7 +17,7 @@
 
 
 #### Here are some animations that change simultanuously with population density 
-animated density plot     |  animated line plot of AGC per population density
+Density plot     |  total agc line
 :-------------------------:|:-------------------------:
 <img src="den_animation.gif" alt="alt text" width="450" height="450"> | <img src="line_animation" alt="alt text" width="450" height="450">
 
