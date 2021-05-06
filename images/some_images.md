@@ -34,6 +34,11 @@ Density plot     |  total agc line
 :-------------------------:|:-------------------------:
 <img src="den_animation.gif" alt="alt text" width="450" height="450"> | <img src="line_animation" alt="alt text" width="450" height="450">
 
+<br>
+
+#### What does this actually look like? Here is a freqpoly plot, a histogram
+<img src="freqpoly.gif" alt="alt text" width="450" height="450">
+
 
 ----
 
