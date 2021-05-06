@@ -22,7 +22,15 @@
 
 <img src="1apr_buffer_tan.png" alt="alt text" width="600" height="600"> 
 
-<img src="national_parks.png" alt="alt text" width="600" height="600"> 
+
+#### I could investigate the impact of Protected areas in skewing the relationship
+```
+using wdpa package
+```
+National Parks | Forest Reserves
+:-------------------------:|:-------------------------:
+
+<img src="national_parks.png" alt="alt text" width="450" height="450"> | <img src="forest_reserve.png" alt="alt text" width="450" height="450">  
 
 ----
 
