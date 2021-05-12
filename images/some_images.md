@@ -66,3 +66,13 @@ A freqpoly histogram     |  zooming in on 0 - 10, population density
 <img src="20april_tan_den07.png" alt="alt text" width="400" height="600">
 
 ---
+
+#### looks nicer
+<img src="pop_den_11_may.png" alt="alt text" width="600" height="600">
+
+
+----
+
+<img src="pop_den_12_may.png" alt="alt text" width="600" height="600">
+
+
