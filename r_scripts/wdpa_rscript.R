@@ -18,6 +18,7 @@ library(rnaturalearthdata)
 library(rnaturalearth)
 #install.packages("processx")
 library(processx)
+library(ggtext)
 #if (!require(devtools))
 #  install.packages("devtools")
 #devtools::install_github("prioritizr/wdpar")
@@ -81,6 +82,36 @@ serengenti <- tza_pa_data %>%
 
 forest_reserve <- tza_pa_data %>% 
   filter(DESIG == "Forest Reserve")
+
+ggplot(forest_reserve) +
+  geom_polygon(data = tanza, 
+               aes(x=long, y = lat, group = group), 
+               fill = "white", colour = "black") +
+  geom_sf(aes(fill = STATUS_YR), col = NA) +
+  scale_fill_viridis_c("Year est.", na.value="red", trans = "sqrt") +
+  labs(title = "Tanzania Forest Reserves",
+       x = "Longitude",
+       y = "Latitude",
+       caption = "World Database on \nProtected Areas",
+       subtitle = "Year established, \n <span style = 'color: red;'>Red</span> is unknown") +
+  theme_bw()+
+  theme(axis.text.x = element_text(size = 12, vjust = 1, hjust = 1),
+        axis.text.y = element_text(size = 12),
+        axis.title.x = element_text(size = 14, face = "plain"),             
+        axis.title.y = element_text(size = 14, face = "plain"),             
+        panel.grid.major.x = element_blank(),                                          
+        panel.grid.minor.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.y = element_blank(),  
+        plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), units = , "cm"),
+        plot.title = element_text(size = 20, vjust = 1, hjust = 0.5),
+        plot.subtitle = element_text(size = 14, vjust = 1, hjust = 0.5),
+        legend.text = element_text(size = 12, face = "italic"),
+        panel.background = element_rect(fill = "azure")
+        ) +
+  theme(plot.subtitle = element_markdown())
+  
+ggsave("images/forest_reserve.png", width = 8, height = 8, dpi = 700, scale = 1)
 
 
 ggplot(serengenti) +
