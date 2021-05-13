@@ -187,7 +187,7 @@ tan_less %>%
   geom_boxplot(width = 0.20, outlier.shape = NA, alpha = 0.8) +
   labs(y = "\nAGC units", x = "Population density (people per km2)\n") +
   guides(fill = FALSE, color = FALSE) +
-  scale_y_continuous(limits = c(0, 80)) +
+  scale_y_continuous(limits = c(0, 90)) +
   scale_fill_manual(values =  wes_palette("Zissou1", 3)) +
   scale_colour_manual(values =  wes_palette("Zissou1", 3)) +
   coord_flip() +
