@@ -45,7 +45,7 @@ I also have shapefiles for all county/administrative boundaries (except Katanga 
 <br>
 
 #### Here are some animations that change simultanuously with population density 
-Density plot - The years appear to be seperate by age at lower agc values   |  total agc line - the total area with agc deduces steeply with pop density increase.
+Density plot - The years appear to seperate by age at lower agc values   |  total agc line - the total area with agc deduces steeply with pop density increase.
 :-------------------------:|:-------------------------:
 <img src="den_animation.gif" alt="alt text" width="450" height="450"> | <img src="line_animation" alt="alt text" width="450" height="450">
 
