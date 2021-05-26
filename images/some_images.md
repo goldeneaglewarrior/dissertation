@@ -32,6 +32,10 @@ National Parks | Forest Reserves
 
 <img src="national_parks.png" alt="alt text" width="475" height="475">  <img src="forest_reserve.png" alt="alt text" width="475" height="475">  
 
+I also have shapefiles for all county/administrative boundaries (except Katanga province (2008-2015))
+
+<br>
+
 <br>
 
 <br>
