@@ -52,7 +52,7 @@ Density plot - The years appear to seperate by age at lower agc values   |  tota
 <br>
 
 #### What does this actually look like? Here is a freqpoly plot, a histogram
-A freqpoly histogram shows that the amount of agc land reduces dramatically as population density increases even a little     
+A freqpoly histogram shows the total agc land reduces dramatically as population density increases even a little     
 
 <img src="freqpoly.gif" alt="alt text" width="450" height="450"> 
 
