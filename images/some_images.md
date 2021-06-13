@@ -32,30 +32,44 @@ National Parks | Forest Reserves
 
 <img src="national_parks.png" alt="alt text" width="475" height="475">  <img src="forest_reserve.png" alt="alt text" width="475" height="475">  
 
+I also have shapefiles for all county/administrative boundaries (except Katanga province (2008-2015))
+
 <br>
 
-----
+<br>
 
+<br>
 
+## All figures below are variations on presenting similar information
 
+<br>
 
 #### Here are some animations that change simultanuously with population density 
-Density plot     |  total agc line
+Density plot - The years appear to seperate by age at lower agc values   |  total agc line - the total area with agc deduces steeply with pop density increase.
 :-------------------------:|:-------------------------:
 <img src="den_animation.gif" alt="alt text" width="450" height="450"> | <img src="line_animation" alt="alt text" width="450" height="450">
 
 <br>
 
-#### What does this actually look like? Here is a freqpoly plot, a histogram
-A freqpoly histogram     |  zooming in on 0 - 10, population density
-:-------------------------:|:-------------------------:
-<img src="freqpoly.gif" alt="alt text" width="450" height="450"> | <img src="freqpoly_10.gif" alt="alt text" width="450" height="450">
+#### What does this actually look like? Here is a freqpoly plot
+It shows the total agc land reduces dramatically as population density increases even a little, making comparisons between low and high population densities .. unbalannced     
+
+<img src="freqpoly.gif" alt="alt text" width="450" height="450"> 
+
+<br>
+<br>
+ 
+Zooming in the change between 0 - 10 population density shows the change in slow motion. Note the decreasing y axis values.
+##### There doesn't appear to be any notable change between the years.
+
+<img src="freqpoly_10.gif" alt="alt text" width="450" height="450">
 
 
 <br>
 
 
 ----
+
 
 ### density plot
 <img src="31mar_tan_den_arrange.png" alt="Helllooo" width="600" height="600">
