@@ -5,9 +5,10 @@
 
 ## Load packages ----
 #install.packages("packages")
+update.packages(ask = FALSE)
 
 #install.packages("wdpar", repos = "https://cran.rstudio.com/")
-#install.packages("curl")
+#install.packages("dplyr")
 library(curl)
 library(sf)
 library(wdpar)
@@ -36,7 +37,9 @@ tanza <-  map_data("world", regions = "Tanzania")
 malawi <-  map_data("world", regions = "Malawi")
 
 
+wdpa_latest_version()
 
+lie_raw_data <- wdpa_fetch("Liechtenstein", wait = TRUE)
 tza_raw_pa_data <- wdpa_fetch("TZA", wait = TRUE)
 
 tza_pa_data <- wdpa_clean(tza_raw_pa_data)
