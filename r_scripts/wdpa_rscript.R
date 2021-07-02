@@ -5,7 +5,7 @@
 
 ## Load packages ----
 #install.packages("packages")
-update.packages(ask = FALSE)
+#update.packages(ask = FALSE)
 
 #install.packages("wdpar", repos = "https://cran.rstudio.com/")
 #install.packages("dplyr")
@@ -18,12 +18,19 @@ library(ggmap)
 library(rnaturalearthdata)
 library(rnaturalearth)
 #install.packages("processx")
+library(maps) #map_data
+library(mapview) #interactive maps
 library(processx)
 library(ggtext)
 #if (!require(devtools))
 #  install.packages("devtools")
 #devtools::install_github("prioritizr/wdpar")
 curl::has_internet()
+library(raster)
+
+africa_07 <- raster("Z:/mcnicol_agc_layers/1km/mcnicol_AGC2007_1km.tif")
+
+
 
 ## tanzania spdf ----
 tan_SPDF <- ne_countries(scale = 50, #1:50 million scale, i think
@@ -39,10 +46,10 @@ malawi <-  map_data("world", regions = "Malawi")
 
 wdpa_latest_version()
 
-lie_raw_data <- wdpa_fetch("Liechtenstein", wait = TRUE)
-tza_raw_pa_data <- wdpa_fetch("TZA", wait = TRUE)
+lie_raw_data <- wdpa_fetch("Liechtenstein")
+tza_raw_pa_data <- wdpa_fetch("TZA")
 
-tza_pa_data <- wdpa_clean(tza_raw_pa_data)
+tza_pa_data <- wdpa_clean(tza_raw_pa_data) # out of date april 2021
 
 # print preview
 head(tza_pa_data, 1)
@@ -85,6 +92,19 @@ serengenti <- tza_pa_data %>%
 
 forest_reserve <- tza_pa_data %>% 
   filter(DESIG == "Forest Reserve")
+
+(forest_reserve$IUCN_CAT)
+
+mapview(forest_reserve)
+mapview(tza_pa_data)
+
+
+crop_forest_reserve <- crop(africa_07, extent(forest_reserve))#nothing?
+mask_forest_reserve <- mask(crop_forest_reserve, forest_reserve)
+plot(mask_forest_reserve)
+mapview(mask_forest_reserve)
+
+forest_reserve_values = raster::extract(x = crop_forest_reserve, y = forest_reserve, df = TRUE) 
 
 ggplot(forest_reserve) +
   geom_polygon(data = tanza, 
@@ -146,7 +166,7 @@ print(statistic)
 #
 #malawi - have to restart sessionfor some reason
 
-MWI_raw_pa_data <- wdpa_fetch("MWI", wait = TRUE)
+MWI_raw_pa_data <- wdpa_fetch("Malawi", wait = TRUE)
 
 mwi_pa_data <- wdpa_clean(MWI_raw_pa_data)
 
