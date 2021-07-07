@@ -21,6 +21,7 @@ africa_10 <- raster("Z:/mcnicol_agc_layers/1km/mcnicol_AGC2010_1km.tif")
 world_pop <- raster('Z:/Worldpop/global_mosaics/ppp_2010_1km_Aggregated.tif')
 
 pal <- wes_palette("Zissou1", 21, type = "continuous")
+pal5 <- wes_palette("Zissou1", 5, type = "continuous")
 show_col(pal)
 
 
@@ -72,10 +73,11 @@ names(agc_stack) <- c("agc2007",
                       "agc2009", 
                       "agc2010")
 
-#tan_agc_df <- agc_stack %>% 
-#  as.data.frame(xy = T) #%>% 
+tan_agc_df <- agc_stack %>%   
+  as.data.frame(xy = T) #%>% 
  # na.omit()
 
+tan_agc_df_na <- tan_agc_df[rowSums(is.na(tan_agc_df[c(3:6)])) != 4, ]
 
 
 ## contour
@@ -89,21 +91,15 @@ tan_1500 <- dplyr::filter(tan_pop_sf, level == "1500")
 ## 1500 ppkm buffers ----
 # 20km
 tan_bfr_20 <- st_buffer(tan_1500, dist = .2) # approximately 20km
-#plot(tan_bfr_20)
 tan_smo_bfr_20 <- fill_holes(tan_bfr_20, threshold = 1000000000000)
-#plot(tan_smo_bfr_20)
 
 # 50km
 tan_bfr_50 <- st_buffer(tan_1500, dist = .5) # approximately 50km
-#plot(tan_bfr_50)
 tan_smo_bfr_50 <- fill_holes(tan_bfr_50, threshold = 1000000000000)
-#plot(tan_smo_bfr_50)
 
 # 80km
 tan_bfr_80 <- st_buffer(tan_1500, dist = .8) # approximately 50km
-#plot(tan_bfr_80)
 tan_smo_bfr_80 <- fill_holes(tan_bfr_80, threshold = 1000000000000)
-#plot(tan_smo_bfr_80)
 
 
 
@@ -114,6 +110,7 @@ bfr_50 <- sf:::as_Spatial(tan_smo_bfr_50)
 bfr_80 <- sf:::as_Spatial(tan_smo_bfr_80)
 
 
+# crop and df (should pipe all these)
 # 20km
 tan_agc_bfr_20 <- agc_stack %>% 
   crop(extent(bfr_20)) %>% 
@@ -165,12 +162,28 @@ agc_80_df$buffer <- (80)
 agc_outside_df$buffer <- (100)
 
 
-tan_total <- full_join(agc_20_df, agc_50_df)
-tan_total <- full_join(tan_total, agc_80_df)
-tan_total <- full_join(tan_total, agc_outside_df)
+tan_total <- dplyr::full_join(agc_20_df, agc_50_df)
+tan_total <- dplyr::full_join(tan_total, agc_80_df)
+tan_total <- dplyr::full_join(tan_total, agc_outside_df)
 
 tan_total$buffer <- as.factor(tan_total$buffer)
 levels(tan_total$buffer)
+
+tan_total_na <- tan_total[rowSums(is.na(tan_total[c(3:6)])) != 4, ]
+
+
+summary(tan_total$agc2007)
+str(tan_total_long)
+
+
+tan_total_long <- tan_total_na %>% 
+  dplyr::select(!x & !y) %>% 
+  pivot_longer(!buffer, names_to = "year", values_to = "biomass") %>% 
+  separate(year, c(NA, "year"), sep = "20" )
+
+
+tan_total_long$year <- as.numeric(tan_total_long$year)
+
 
 
 #tan_total %>% 
@@ -203,16 +216,122 @@ levels(tan_total_long$buffer)
 
 tan_total_long$year <- as.numeric(tan_total_long$year)
 
+
+tan_total_na <- tan_total_na %>% 
+  dplyr::mutate(perc_08 = ((agc2008 - agc2007) / agc2007)* 100) %>% 
+  dplyr::mutate(perc_09 = ((agc2009 - agc2008) / agc2008)* 100) %>% 
+  dplyr::mutate(perc_10 = ((agc2010 - agc2009) / agc2009)* 100)
+
+tan_perc <- tan_total_na %>% 
+  dplyr::select(7:10) %>% 
+  dplyr::mutate(perc_07 = 0) %>% 
+  pivot_longer(!buffer, names_to = "year", values_to = "perc_change") %>% 
+  separate(year, c(NA, "year"), sep = "_" )
+
+tan_perc$year <- as.numeric(tan_perc$year)
+
+
+tan_perc <- tan_perc %>% 
+  dplyr::filter(perc_change <= 100, perc_change >= -100)
+
+tan_perc %>%
+  #dplyr::filter(year == 10) %>% 
+  ggplot(aes(x = factor(year), y = perc_change)) +
+  geom_boxplot() +
+  facet_wrap(~buffer)
+
+
+
+tan_perc %>% 
+  dplyr::filter(perc_change > 0) %>% 
+  ggplot(aes(x = factor(year), y = perc_change)) +
+  geom_violin() +
+  geom_smooth(method = "lm") +
+  facet_wrap(~buffer)
+
+tan_perc %>% 
+  dplyr::filter(perc_change < 0) %>% 
+  ggplot(aes(x = buffer, y = perc_change)) +
+  geom_violin() +
+  #geom_smooth(method = "lm") +
+  facet_wrap(~year)
+
+
+tan_perc %>% 
+  dplyr::filter(perc_change < 0) %>% 
+  #dplyr::filter(year == 08) %>% 
+  ggplot(aes(x = perc_change, group = buffer)) +
+  geom_density(aes(col = buffer)) %>% 
+  facet_wrap(~year)
+
+
+tan_perc %>% 
+  dplyr::filter(perc_change < 0) %>% 
+  dplyr::filter(buffer == 100) %>% 
+  ggplot(aes(x = perc_change, group = factor(year))) +
+  geom_density(aes(col = factor(year))) #%>% 
+ # facet_wrap(~buffer)
+
+
+
+tan_perc %>% 
+  dplyr::filter(!perc_change == 07) %>% 
+  ggplot() +
+  geom_bar(aes(x = buffer)) +
+  facet_wrap(~year)
+
+
+
+tan_perc %>% 
+  dplyr::filter(perc_change > 0) %>% 
+  ggplot(aes(x = factor(year), y = perc_change)) +
+  geom_boxplot(aes(fill = buffer)) +
+  scale_fill_manual(values = c("#EE3700", "#E1AF00", "#EBCC2A","#78B7C5")) + # red, yellow, blue
+  theme_classic()
+
+tan_perc %>% 
+  dplyr::filter(perc_change > 0) %>% 
+  ggplot(aes(x = buffer, y = perc_change)) +
+  geom_boxplot(aes(fill = factor(year))) +
+  scale_fill_manual(values = c("#EE3700", "#EBCC2A", "#78B7C5", )) + # red, yellow, blue
+  theme_bw() +
+  labs(title = "",
+       subtitle = "",
+       x = "",
+       y = "year")
+
+
+tan_perc %>% 
+  dplyr::filter(perc_change < 0) %>% 
+  ggplot(aes(x = buffer, y = perc_change)) +
+  geom_boxplot(aes(fill = factor(year))) +
+  scale_fill_manual(values = c("#EE3700", "#EBCC2A", "#78B7C5")) + # red, yellow, blue
+  theme_bw()
+
+
+
+head(tan_perc)
+
 levels(tan_total_long$buffer) <- list("<20km"="20","20-50km"="50", "50-80km"="80", ">80km"="100")
 
 tan_total_long %>% 
  # dplyr::filter(buffer == 20) %>% 
-  ggplot(aes(x = year, y = biomass, colour = buffer)) +
-  geom_smooth(method="lm") +
+  ggplot(aes(x = year, y = biomass, fill = buffer)) +
+  stat_smooth(method="lm", aes(fill = buffer, col = buffer)) +
   labs(title = "Tanzania biomass change in buffer area",
        y = "Average biomass (MgC/ha/km)",
        caption = "McNicol et al. 2018\ngeom_smooth(method = lm)") +
   theme_bw()
+
+
+
+
+
+tan_total_long %>% 
+  dplyr::filter(year == 10) %>% 
+  ggplot(aes(x = buffer, y = biomass)) +
+  stat_smooth(method="lm")
+
 
 
   

@@ -31,7 +31,7 @@ tan_SPDF <- ne_countries(scale = 50, #1:50 million scale
 
 tanza <-  map_data("world", regions = "Tanzania")
 mainland_tan <- tanza %>% 
-  filter(is.na(subregion))
+  dplyr::filter(is.na(subregion))
 
 
 

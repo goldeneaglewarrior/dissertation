@@ -209,30 +209,3 @@ ggplot(dist_tan4y, aes(X, Y, fill = dist))+ #variables
 
 
 
-
-
-
-tanzania <- ne_countries(scale = 50, 
-                        country = "United Republic of Tanzania", 
-                        returnclass = "sf")
-
-tanzania <- st_transform(tanzania, 3055)
-
-grid <- st_make_grid(tanzania, cellsize = 5000, what = "centers")
-
-grid <- st_intersection(grid, tanzania)   
-
-tanzania <- st_cast(tanzania, "MULTILINESTRING")
-
-dist1 <- st_distance(tanzania, grid)
-
-df <- data.frame(dist = as.vector(dist)/1000,
-                 st_coordinates(grid))
-
-ggplot(df, aes(X, Y, fill = dist))+ #variables
-  geom_tile()+ #geometry
-  #scale_fill_gradientn(colours = rev(col_dist))+ #colors for plotting the distance
-  labs(fill = "Distance (km)")+ #legend name
-  theme_void()+ #map theme
-  coord_quickmap() +
-  theme(legend.position = "bottom") #legend position
