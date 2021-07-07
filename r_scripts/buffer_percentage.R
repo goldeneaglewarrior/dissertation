@@ -283,22 +283,30 @@ tan_perc %>%
 
 
 tan_perc %>% 
-  dplyr::filter(perc_change > 0) %>% 
+  dplyr::filter(perc_change < 0) %>% 
   ggplot(aes(x = factor(year), y = perc_change)) +
   geom_boxplot(aes(fill = buffer)) +
-  scale_fill_manual(values = c("#EE3700", "#E1AF00", "#EBCC2A","#78B7C5")) + # red, yellow, blue
-  theme_classic()
+  scale_fill_manual(name = "Distance from\nurban area",
+                    values = c("#EE3700", "#E1AF00", "#EBCC2A","#78B7C5"),
+                    labels = c("< 20km ", "20 - 50km", "50 - 80km", "> 80km")) + # red, yellow, blue
+  theme_classic() +
+  labs(title = "Annual Tanzanian AGB loses around urban area",
+       caption = "Source: McNicol et al. 2018",
+       x = "Year",
+       y = "Annual biomass loses (%)") +
+  scale_x_discrete(labels=c("8" = "'07 to '08", "9" = "'08 to '09",
+                            "10" = "'09 to '10")) +
+  scale_y_reverse()
+
+
+
 
 tan_perc %>% 
   dplyr::filter(perc_change > 0) %>% 
   ggplot(aes(x = buffer, y = perc_change)) +
   geom_boxplot(aes(fill = factor(year))) +
   scale_fill_manual(values = c("#EE3700", "#EBCC2A", "#78B7C5", )) + # red, yellow, blue
-  theme_bw() +
-  labs(title = "",
-       subtitle = "",
-       x = "",
-       y = "year")
+  theme_bw() 
 
 
 tan_perc %>% 
