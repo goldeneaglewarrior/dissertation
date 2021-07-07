@@ -69,7 +69,7 @@ names(agc_stack) <- c("agc2007",
 
 
 pop_1500 <- pop %>% 
-  rasterToContour(nlevels = 50) %>% 
+  rasterToContour(nlevels = 20) %>% 
   st_as_sf() %>% 
   dplyr::filter(level == "1500")
 
