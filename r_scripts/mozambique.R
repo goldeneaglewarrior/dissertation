@@ -233,9 +233,12 @@ total_long %>%
        x = "Buffer from urban area (1500 people per km2)",
        y = "Annual aboveground biomass loses (%)") +
   scale_x_discrete(labels=c("20" = "< 20km", "50" = "20 - 50km",
-                            "80" = "50 - 80km", "100" = "Whole country")) +
+                            "80" = "50 - 80km", "100" = "Whole country"))
  # ylim(-50,50)
 
+  
+  
+  
 
 
 total_long %>% 
