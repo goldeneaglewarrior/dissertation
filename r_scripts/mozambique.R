@@ -183,9 +183,13 @@ total <- total %>%
   dplyr::mutate(perc_2010 = ((agc2010 - agc2009) / agc2009)* 100)
 
 
+total_biomass_perc <- total %>% 
+  dplyr::select(3,8:10) %>% 
+  pivot_longer(!agc2007, names_to = "year", values_to = "perc_change") %>% 
+  separate(year, c(NA, "year"), sep = "_" )
 
 
-
+total_biomass_perc <- na.omit(total_biomass_perc)
 total_long <- total %>% 
   dplyr::select(7:10) %>% 
   #dplyr::mutate(perc_07 = 0) %>% 
@@ -203,7 +207,7 @@ total_long <- total_long %>%
 
 total_long %>% 
   dplyr::filter(perc_change < 0) %>% 
-  #dplyr::filter(!is.na(buffer)) %>% 
+ # dplyr::filter(r)) %>% 
   ggplot(aes(x = factor(year), y = perc_change)) +
   geom_boxplot(aes(fill = factor(buffer))) +
   scale_fill_manual(name = "Distance from\nurban area",
@@ -237,7 +241,24 @@ total_long %>%
  # ylim(-50,50)
 
   
-  
+
+total_biomass_perc %>% 
+  ggplot(aes(x = agc2007, y = perc_change, col = factor(year))) +
+  geom_smooth(method = "lm") +
+  ylim(-100, 100)
+
+ 
+total_biomass_perc %>%
+  filter(year == 2008) %>%
+  filter(agc2007 > 20) %>% # actually forest at the start
+  filter(perc_change < 0) %>% 
+  ggplot(aes(x = agc2007, y = perc_change)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  ylim(-100, 0) +
+  scale_y_reverse()
+
+
   
 
 
