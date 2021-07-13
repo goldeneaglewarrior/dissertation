@@ -72,6 +72,8 @@ names(agc_stack) <- c("agc2007",
                       "agc2009", 
                       "agc2010")
 
+
+
 tan_agc_df <- agc_stack %>% 
   as.data.frame(xy = T) %>% 
   na.omit()

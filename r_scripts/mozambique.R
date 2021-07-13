@@ -25,8 +25,8 @@ africa_10 <- raster("Z:/mcnicol_agc_layers/1km/mcnicol_AGC2010_1km.tif")
 
 world_pop <- raster('Z:/Worldpop/global_mosaics/ppp_2010_1km_Aggregated.tif')
 
-pal_cava <- wes_palette("Cavalcanti1", 21, type = "continuous")
-show_col(pal_cava)
+pal <- wes_palette("Zissou1", 21, type = "continuous")
+show_col(pal)
 
 
 ## SPDF of country ----
@@ -98,41 +98,41 @@ bfr_80 <- pop_1500 %>%
 
 # crop and df 
 # 20km
-agc_20 <- agc_stack %>% 
+agc_20 <- agc07 %>% 
   crop(extent(bfr_20)) %>% 
   mask(bfr_20) %>% 
-  as.data.frame(xy = T)# %>% 
-  #na.omit()
+  as.data.frame(xy = T) %>% 
+  na.omit()
 
 
 # 50km crop 
-agc_50 <- agc_stack %>% 
+agc_50 <- agc07 %>% 
   crop(extent(bfr_50)) %>% 
   mask(bfr_50)  %>% 
   crop(bfr_20) %>% 
   mask(bfr_20, inverse = T) %>% 
-  as.data.frame(xy = T)# %>% 
-  #na.omit()
+  as.data.frame(xy = T) %>% 
+  na.omit()
 
 
   
 # 80km
-agc_80 <- agc_stack %>% 
+agc_80 <- agc07 %>% 
   crop(extent(bfr_80)) %>% 
   mask(bfr_80) %>% 
   crop(bfr_50) %>% 
   mask(bfr_50, inverse = T) %>% 
-  as.data.frame(xy = T)# %>% 
-  #na.omit()#
+  as.data.frame(xy = T) %>% 
+  na.omit()#
 
   
   
 # outside buffer 
-agc_country <- agc_stack %>% 
+agc_country <- agc07 %>% 
   #crop(extent(bfr_80)) %>% 
   #mask(bfr_80, inverse = T) %>% 
-  as.data.frame(xy = T) #%>% 
-  #na.omit()
+  as.data.frame(xy = T) %>% 
+  na.omit()
 
 
 ab <- anti_join(agc_80, agc_50)
@@ -143,18 +143,20 @@ ab %>%
   theme_classic()
 
 
+# #D8B70A", "#A2A475", "#81A88D"
+
 ggplot() +
-  geom_tile(agc_20, mapping = aes(x=x,y=y, fill = agc2007))+
-  #geom_tile(agc_50, mapping = aes(x=x,y=y, fill = agc2007)) +
-  #geom_tile(agc_80, mapping = aes(x=x,y=y, fill = agc2007)) +
+  geom_tile(agc_country, mapping = aes(x=x,y=y, fill = mcnicol_AGC2007_1km), col = "#78B7C5")+
+  geom_tile(agc_80, mapping = aes(x=x,y=y, fill = mcnicol_AGC2007_1km), col = "#EBCC2A") +
+  geom_tile(agc_50, mapping = aes(x=x,y=y, fill = mcnicol_AGC2007_1km), col = "#E1AF00") +
+  geom_tile(agc_20, mapping = aes(x=x,y=y, fill = mcnicol_AGC2007_1km), col = "#EE3700") +
   geom_polygon(data = country_outline, 
                aes(x=long, y = lat, group = group), 
                fill = NA, colour = "black") +
   # scale_fill_continuous(na.value = NA) +
   coord_quickmap() +
   theme_classic() +
-  theme(legend.position = "none") +
-  scale_fill_viridis_c(na.value = NA) 
+  theme(legend.position = "none") 
 
 
 
