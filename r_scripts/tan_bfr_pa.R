@@ -1,12 +1,7 @@
-# Tanzania rural areas
+# tan_bfr_pa
 
-
-source("https://gist.githubusercontent.com/benmarwick/2a1bb0133ff568cbe28d/raw/fb53bd97121f7f9ce947837ef1a4c65a73bffb3f/geom_flat_violin.R")
-
-
-## libraries
 library(sf) #necesarry for wdpar
-#library(wdpar)
+library(wdpar)
 library(dplyr)
 library(ggplot2)
 library(raster)
@@ -16,7 +11,8 @@ library(smoothr) #fill.hole
 library(scales) # palette visualise show_col()
 library(tidyr)
 #library(ggridges)
-library(mapview) # interactive geometry viewing
+library(mapview) 
+
 
 
 ## load data ----
@@ -27,8 +23,17 @@ africa_10 <- raster("Z:/mcnicol_agc_layers/1km/mcnicol_AGC2010_1km.tif")
 
 world_pop <- raster('Z:/Worldpop/global_mosaics/ppp_2007_1km_Aggregated.tif')
 
-pal <- wes_palette("Zissou1", 21, type = "continuous")
-show_col(pal)
+
+tza_raw_pa_data <- wdpa_fetch("TZA")
+tza_pa_data <- wdpa_clean(tza_raw_pa_data) # out of date april 2021
+# reproject data to longitude/latitude for plotting
+tza_pa_data <- st_transform(tza_pa_data, 4326)
+forest_reserve <- tza_pa_data %>% 
+  filter(DESIG == "Forest Reserve")
+unique(forest_reserve$DESIG)
+
+
+
 
 
 ## SPDF of country ----
@@ -123,24 +128,6 @@ pop_hi1500_bfr_sf <- pop_1500_hi %>%
   st_buffer(dist = .8) %>% 
   fill_holes(threshold = 1000000000000)# 
 
-## investigate ----
-st_area(pop_hi1500_bfr_sf) # calculate area for
-st_area(pop_low1500_bfr_sf)
-
-intersection <- st_intersection(pop_hi1500_bfr_sf$geometry, pop_low1500_bfr_sf$geometry)
-st_area(intersection)
-
-
-
-length(pop_1500$geometry[[1]])
-length(pop_1500_lo$geometry[[1]])
-length(pop_1500_hi$geometry[[1]])
-# There are 53 urban contour areas with 1500 people km-2
-# 27 of them are within 80 km spheres of large cities, over 4000 people km-2
-# 26 of them are outside of 80km sphere of larger cities
-
-#mapview(pop_low1500_bfr_sf)
-#mapview(pop_hi1500_bfr_sf)
 
 poplow_overlap_mask <- st_difference(pop_low1500_bfr_sf, pop_hi1500_bfr_sf)
 st_area(poplow_overlap_mask)
@@ -150,20 +137,6 @@ poplow_overlap_spdf <- poplow_overlap_mask %>%
 whole_inside <- st_union(pop_low1500_bfr_sf, pop_hi1500_bfr_sf)
 
 
-
-# reproject data to longitude/latitude for plotting
-mwi_pa_data <- st_transform(mwi_pa_data, 4326)
-# need to transform to make metric
-# = st_transform(us_states, crs = 2163)
-
-
-# Doesn't work yet but important
-#pop_1500_low <- st_transform(pop_1500_low, 4326)
-# proj4string(pop_1500_low) <- CRS("+init=epsg:4326") 
-
-
-
-## buffer urban area ----
 
 # buffer for lower urban area
 
@@ -181,6 +154,11 @@ bfr_80_lo <- pop_1500_lo %>%
   st_buffer(dist = .8) %>%  # approximately 20km
   fill_holes(threshold = 1000000000000) %>% 
   as_Spatial()
+
+# renaming agc_stack!
+agc_stack <- mask(agc_stack, forest_reserve)
+
+mapview(agc_stack$agc2007)
 
 
 # crop and df 
@@ -206,6 +184,7 @@ agc_80_lo <- agc_stack %>%
   mask(bfr_50_lo, inverse = T) %>% 
   as.data.frame(xy = T) %>% 
   mutate(buffer = 80)
+
 
 
 ## high urban cities 
@@ -251,156 +230,29 @@ agc_80_hi <- agc_stack %>%
 # rural buffer 
 agc_rural <- agc_stack %>% 
   mask(whole_inside, inverse = T) %>% 
-  as.data.frame(xy = T)
-
-
-#ggplot() +
-  geom_tile(agc_rural, mapping = aes(x=x,y=y, fill= agc2007, col = "#78B7C5")) +
-  geom_tile(agc_20_lo,mapping = aes(x=x,y=y,fill = agc2007), col = "#EB5500") +
-  geom_tile(agc_50_lo,mapping = aes(x=x,y=y,fill = agc2007), col = "#E4BA10") +
-  geom_tile(agc_80_lo,mapping = aes(x=x,y=y,fill = agc2007), col = "#BDC367" ) +
-  geom_tile(agc_20_hi,mapping = aes(x=x,y=y,fill = agc2007), col = "#F21A00") + #dark red
-  geom_tile(agc_50_hi,mapping = aes(x=x,y=y,fill = agc2007), col = "#E1AF00") +
-  geom_tile(agc_80_hi,mapping = aes(x=x,y=y,fill = agc2007), col = "#EBCC2A" ) + #yellow
-  geom_polygon(data = country_outline, 
-               aes(x=long, y = lat, group = group), 
-               fill = NA, colour = "black") +
-  coord_quickmap() +
-  theme(legend.position = "none") +
-  guides(color = FALSE, fill = FALSE) +
-  theme_classic()
-
-
-
-
-agc_total_hi <- full_join(agc_20_hi, agc_50_hi)
-agc_total_hi <- full_join(agc_total_hi, agc_80_hi)
-agc_total_hi <- agc_total_hi[rowSums(is.na(agc_total_hi[c(3:6)])) != 4, ]
-
-
-
-
-agc_total_lo <- full_join(agc_20_lo, agc_50_lo)
-agc_total_lo <- full_join(agc_total_lo, agc_80_lo)
-agc_total_lo <- agc_total_lo[rowSums(is.na(agc_total_lo[c(3:6)])) != 4, ]
-
-
-write.csv(agc_total_hi,file="data/agc/agc_total_hi.csv", row.names = FALSE)
-write.csv(agc_total_lo,file="data/agc/agc_total_lo.csv", row.names = FALSE)
-write.csv(agc_rural,file="data/agc/agc_rural.csv", row.names = FALSE)
-
-write.csv(pop_total_hi,file="data/pop/pop_total_hi.csv", row.names = FALSE)
-write.csv(pop_total_lo,file="data/pop/pop_total_lo.csv", row.names = FALSE)
-write.csv(pop_rural,file="data/pop/pop_rural.csv", row.names = FALSE)
-
-carSpeeds <- read.csv(file ="data/buffers/agc_total_hi.csv")
-
-summary(agc_total_hi)
-summary(carSpeeds)
-
-total <- full_join(total, agc_country)
-
-
-
-
-
-
-
-
-
-
-
-##
-#
-# Population mask buffer ----
-# crop and df 
-# 20km low
-pop_20_lo <- pop %>% 
-  mask(poplow_overlap_spdf) %>% 
-  mask(bfr_20_lo) %>% 
-  as.data.frame(xy = T) %>% 
-  mutate(buffer = 20)
-
-# 50km low
-pop_50_lo <- pop %>% 
-  mask(poplow_overlap_spdf) %>% 
-  mask(bfr_50_lo)  %>% 
-  mask(bfr_20_lo, inverse = T) %>% 
-  as.data.frame(xy = T) %>% 
-  mutate(buffer = 50)
-
-# 80km low
-pop_80_lo <- pop %>% 
-  mask(poplow_overlap_spdf) %>%
-  mask(bfr_80_lo) %>% 
-  mask(bfr_50_lo, inverse = T) %>% 
-  as.data.frame(xy = T) %>% 
-  mutate(buffer = 80)
-
-# hi pop crop and df 
-# 20km
-pop_20_hi <- pop %>% 
-  mask(bfr_20_hi) %>% 
-  as.data.frame(xy = T) %>% 
-  mutate(buffer = 20)
-
-# 50km crop 
-pop_50_hi <- pop %>% 
-  mask(bfr_50_hi)  %>% 
-  mask(bfr_20_hi, inverse = T) %>% 
-  as.data.frame(xy = T) %>% 
-  mutate(buffer = 50)
-
-# 80km
-pop_80_hi <- pop %>% 
-  mask(bfr_80_hi) %>% 
-  mask(bfr_50_hi, inverse = T) %>% 
-  as.data.frame(xy = T) %>% 
-  mutate(buffer = 80)
-
-
-## outside 
-# rural buffer 
-pop_rural <- pop %>% 
-  mask(whole_inside, inverse = T) %>% 
   as.data.frame(xy = T) %>% 
   mutate(buffer = 100)
 
-
-pop_total_lo <- full_join(pop_20_lo, pop_50_lo)
-pop_total_lo <- full_join(pop_total_lo, pop_80_lo)
-
-pop_total_lo <- pop_total_lo %>% 
-  na.omit()
-
-names(pop_total_hi)[3] <- "pop_km"
-
-pop_total_hi <- full_join(pop_20_hi, pop_50_hi)
-pop_total_hi <- full_join(pop_total_hi, pop_80_hi)
-
-pop_total_hi <- pop_total_hi %>% 
-  na.omit()
+  
+mapview(agc_rural$agc2007)
+agc_pa_rural <- agc_rural
+agc_pa_rural <- agc_pa_rural[rowSums(is.na(agc_pa_rural[c(3:6)])) != 4, ]
 
 
-pop_total_hi %>% 
-  summary()
-
-pop_total_lo %>% 
-  summary()
+agc_pa_hi <- full_join(agc_20_hi, agc_50_hi)
+agc_pa_hi <- full_join(agc_pa_hi, agc_80_hi)
+agc_pa_hi <- agc_pa_hi[rowSums(is.na(agc_pa_hi[c(3:6)])) != 4, ]
 
 
-pop_total_lo %>% 
-  filter(buffer == 50) %>%
-  summary() 
-
-pop_total_lo %>% 
-  filter(buffer == 80) %>%
-  summary()
+agc_pa_lo <- full_join(agc_20_lo, agc_50_lo)
+agc_pa_lo <- full_join(agc_pa_lo, agc_80_lo)
+agc_pa_lo <- agc_pa_lo[rowSums(is.na(agc_pa_lo[c(3:6)])) != 4, ]
 
 
-pop_total_hi %>% 
-  filter(buffer == 80) %>%
-  summary()
+write.csv(agc_pa_hi,file="data/agc/agc_pa_hi.csv", row.names = FALSE)
+write.csv(agc_pa_lo,file="data/agc/agc_pa_lo.csv", row.names = FALSE)
+write.csv(agc_pa_rural,file="data/agc/agc_pa_rural.csv", row.names = FALSE)
+
 
 
 
